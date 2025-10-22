@@ -1,0 +1,18 @@
+[
+    {
+        "destination": "Chicago",
+        "name": "PunjabMale",
+        "seats": [
+            [
+                {
+                    "aadharCard": "1236986t89420t",
+                    "name": "sahil",
+                    "userId": "sk1129"
+                }
+            ]
+        ],
+        "source": "Metra",
+        "time": 1746512644,
+        "vehicleId": "123"
+    }
+]

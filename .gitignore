@@ -1,0 +1,3 @@
+.vscode
+ticketBookingSystemRust/target/*
+ticketBookingSystemRust/Cargo.lock
