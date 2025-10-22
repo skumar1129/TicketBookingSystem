@@ -1,7 +1,5 @@
 // Imports Serde traits for JSON serialization/deserialization.
 use serde::{Deserialize, Serialize};
-// Imports Vec for dynamic arrays, equivalent to C++'s std::vector.
-use std::vec::Vec;
 
 // Defines the User struct, equivalent to the C++ User struct in user.hpp.
 // Derives Serialize and Deserialize for JSON compatibility, Clone for copying, and Debug for printing.

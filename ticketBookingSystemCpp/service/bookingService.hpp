@@ -7,7 +7,7 @@
 #include "../entities/train.hpp"   // Includes the train.hpp header file, which defines the Train struct, used as a template parameter.
 #include "fileIO.hpp"              // Includes the fileIO.hpp header file, which defines the FileIO class for file operations.
 
-using namespace std;  // Brings the standard namespace into scope, allowing use of std:: types (e.g., string, vector) without explicit qualification. Note: This is generally avoided in header files to prevent namespace pollution.
+using namespace std;  // Brings the standard namespace into scope, allowing use of std:: types (e.g., string, vector) without explicit qualification.
 
 template <typename T>  // Defines a generic template class BookingService for handling booking operations with type T.
 class BookingService {  // Declaration of the BookingService class.

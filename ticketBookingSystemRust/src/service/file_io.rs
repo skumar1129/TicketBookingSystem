@@ -1,5 +1,3 @@
-// Imports Serde traits for JSON serialization/deserialization.
-use serde::{Deserialize, Serialize};
 // Imports File and OpenOptions for file operations, equivalent to C++'s std::fstream.
 use std::fs::{File, OpenOptions};
 // Imports Read and Write for file I/O, equivalent to C++'s file stream operations.
