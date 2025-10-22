@@ -5,8 +5,7 @@
 #include <vector>    // Includes the vector library to use the std::vector class for dynamic arrays.
 #include "user.hpp"  // Includes the user.hpp header file, which defines the User struct, allowing Train to reference User.
 
-using namespace std;  // Brings the standard namespace into scope, allowing use of std:: types (e.g., string, vector) without explicit qualification. Note: This is generally avoided in header files to prevent namespace pollution.
-
+using namespace std;  // Brings the standard namespace into scope, allowing use of std:: types (e.g., string, vector) without explicit qualification.
 struct Train {                    // Defines a struct named Train to represent a train entity.
     string trainId;              // A string member to store a unique identifier for the train.
     string name;                 // A string member to store the name of the train.

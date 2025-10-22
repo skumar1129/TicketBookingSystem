@@ -15,16 +15,81 @@ void BookingService<Vehicle>::book(string entityId, User user, string name, stri
     saveBooking(vehicle);  // Calls the saveBooking method to persist the Vehicle object to a file.
 }
 
+
 template <>  // Explicit specialization of the BookingService class for Vehicle type.
-void BookingService<Vehicle>::cancelBooking(string entityId, string userId) {  // Defines the cancelBooking method for Vehicle (placeholder).
-    // Implementation for cancel booking
-    // No implementation provided; likely intended to remove a user's booking from a Vehicle identified by entityId.
+void BookingService<Vehicle>::cancelBooking(string entityId, string userId) {
+    FileIO<Vehicle> file;
+    // Assumes FileIO<Vehicle>::readFromFile() returns std::vector<Vehicle>
+    // and FileIO<Vehicle>::saveToFile(const std::vector<Vehicle>&) overwrites the stored collection.
+    auto vehicles = file.readFromFile();
+    bool changed = false;
+
+    for (auto &v : vehicles) {
+        if (v.vehicleId == entityId) {
+            // seats is a 2D vector: vector<vector<User>>
+            for (auto rowIt = v.seats.begin(); rowIt != v.seats.end();) {
+                auto &row = *rowIt;
+                for (auto userIt = row.begin(); userIt != row.end();) {
+                    if (userIt->userId == userId) {
+                        userIt = row.erase(userIt);
+                        changed = true;
+                    } else {
+                        ++userIt;
+                    }
+                }
+                // remove empty rows
+                if (row.empty()) {
+                    rowIt = v.seats.erase(rowIt);
+                } else {
+                    ++rowIt;
+                }
+            }
+            break;
+        }
+    }
+
+    if (changed) {
+        for (const auto &veh : vehicles) {
+            file.saveToFile(veh);
+        }
+        std::cout << "Cancelled booking for user " << userId << " on vehicle " << entityId << '\n';
+    } else {
+        std::cout << "No matching booking found for user " << userId << " on vehicle " << entityId << '\n';
+    }
 }
 
 template <>  // Explicit specialization of the BookingService class for Vehicle type.
-void BookingService<Vehicle>::printBooking(string entityId, string userId) {  // Defines the printBooking method for Vehicle (placeholder).
-    // Implementation for print booking
-    // No implementation provided; likely intended to display booking details for a user on a Vehicle.
+void BookingService<Vehicle>::printBooking(string entityId, string userId) {
+    FileIO<Vehicle> file;
+    // Assumes FileIO<Vehicle>::readFromFile() returns std::vector<Vehicle>
+    auto vehicles = file.readFromFile();
+
+    for (const auto &v : vehicles) {
+        if (v.vehicleId == entityId) {
+            std::cout << "Vehicle ID: " << v.vehicleId << "\n";
+            std::cout << "Name: " << v.name << "\n";
+            std::cout << "Source: " << v.source << "  Destination: " << v.destination << "\n";
+            std::cout << "Time: " << v.time << "\n";
+            bool found = false;
+            for (size_t r = 0; r < v.seats.size(); ++r) {
+                for (size_t c = 0; c < v.seats[r].size(); ++c) {
+                    const auto &u = v.seats[r][c];
+                    if (u.userId == userId) {
+                        std::cout << "Booked seat - row: " << r << " col: " << c
+                                  << " | User ID: " << u.userId
+                                  << " | Name: " << u.name << '\n';
+                        found = true;
+                    }
+                }
+            }
+            if (!found) {
+                std::cout << "No booking found for user " << userId << " on vehicle " << entityId << '\n';
+            }
+            return;
+        }
+    }
+
+    std::cout << "Vehicle with ID " << entityId << " not found\n";
 }
 
 template <>  // Explicit specialization of the BookingService class for Vehicle type.
@@ -48,15 +113,74 @@ void BookingService<Train>::book(string entityId, User user, string name, string
 }
 
 template <>  // Explicit specialization of the BookingService class for Train type.
-void BookingService<Train>::cancelBooking(string entityId, string userId) {  // Defines the cancelBooking method for Train (placeholder).
-    // Implementation for cancel booking
-    // No implementation provided; likely intended to remove a user's booking from a Train identified by entityId.
+void BookingService<Train>::cancelBooking(string entityId, string userId) {
+    FileIO<Train> file;
+    auto trains = file.readFromFile();
+    bool changed = false;
+
+    for (auto &t : trains) {
+        if (t.trainId == entityId) {
+            for (auto rowIt = t.seats.begin(); rowIt != t.seats.end();) {
+                auto &row = *rowIt;
+                for (auto userIt = row.begin(); userIt != row.end();) {
+                    if (userIt->userId == userId) {
+                        userIt = row.erase(userIt);
+                        changed = true;
+                    } else {
+                        ++userIt;
+                    }
+                }
+                if (row.empty()) {
+                    rowIt = t.seats.erase(rowIt);
+                } else {
+                    ++rowIt;
+                }
+            }
+            break;
+        }
+    if (changed) {
+        for (const auto &tr : trains) {
+            file.saveToFile(tr);
+        }
+        std::cout << "Cancelled booking for user " << userId << " on train " << entityId << '\n';
+    } else {
+        std::cout << "No matching booking found for user " << userId << " on train " << entityId << '\n';
+    }
+        std::cout << "No matching booking found for user " << userId << " on train " << entityId << '\n';
+    }
 }
 
 template <>  // Explicit specialization of the BookingService class for Train type.
-void BookingService<Train>::printBooking(string entityId, string userId) {  // Defines the printBooking method for Train (placeholder).
-    // Implementation for print booking
-    // No implementation provided; likely intended to display booking details for a user on a Train.
+void BookingService<Train>::printBooking(string entityId, string userId) {
+    FileIO<Train> file;
+    auto trains = file.readFromFile();
+
+    for (const auto &t : trains) {
+        if (t.trainId == entityId) {
+            std::cout << "Train ID: " << t.trainId << "\n";
+            std::cout << "Name: " << t.name << "\n";
+            std::cout << "Source: " << t.source << "  Destination: " << t.destination << "\n";
+            std::cout << "Time: " << t.time << "\n";
+            bool found = false;
+            for (size_t r = 0; r < t.seats.size(); ++r) {
+                for (size_t c = 0; c < t.seats[r].size(); ++c) {
+                    const auto &u = t.seats[r][c];
+                    if (u.userId == userId) {
+                        std::cout << "Booked seat - row: " << r << " col: " << c
+                                  << " | User ID: " << u.userId
+                                  << " | Name: " << u.name << '\n';
+                        found = true;
+                    }
+                }
+            }
+            if (!found) {
+                std::cout << "No booking found for user " << userId << " on train " << entityId << '\n';
+            }
+            return;
+        }
+    }
+
+    std::cout << "Train with ID " << entityId << " not found\n";
 }
 
 template <>  // Explicit specialization of the BookingService class for Train type.

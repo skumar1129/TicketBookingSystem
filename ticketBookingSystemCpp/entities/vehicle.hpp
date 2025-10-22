@@ -6,7 +6,7 @@
 #include "user.hpp"  // Includes the user.hpp header file, which defines the User struct, used in the seats member.
 #include "train.hpp" // Includes the train.hpp header file, which defines the Train struct, used in the convert function.
 
-using namespace std;  // Brings the standard namespace into scope, allowing use of std:: types (e.g., string, vector) without explicit qualification. Note: This is generally avoided in header files to prevent namespace pollution.
+using namespace std;  // Brings the standard namespace into scope, allowing use of std:: types (e.g., string, vector) without explicit qualification. 
 
 struct Vehicle {                  // Defines a struct named Vehicle to represent a generic vehicle entity.
     string vehicleId;             // A string member to store a unique identifier for the vehicle.

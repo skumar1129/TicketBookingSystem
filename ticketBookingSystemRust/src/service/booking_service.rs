@@ -57,14 +57,78 @@ impl BookingService for BookingServiceImpl<Vehicle> {
         self.save_booking(&vehicle) // Saves the Vehicle to db.json.
     }
 
-    // Placeholder for canceling a booking, matching C++'s empty implementation.
-    fn cancel_booking(&self, _entity_id: String, _user_id: String) {
-        println!("Cancel booking not implemented"); // Prints a placeholder message.
+    // Cancels a booking for a Vehicle by user_id. Reads vehicles from storage,
+    // removes the user from the seats for the matched vehicle and saves the updated vehicle.
+    fn cancel_booking(&self, entity_id: String, user_id: String)
+    where
+        FileIOImpl<Vehicle>: super::file_io::FileIO<Item = Vehicle>,
+    {
+        let file = FileIOImpl::<Vehicle>::new();
+        match file.read_from_file() {
+            Ok(mut vehicles) => {
+                if let Some(vehicle) = vehicles.iter_mut().find(|v| v.vehicle_id == entity_id) {
+                    let mut removed = false;
+                    for row in vehicle.seats.iter_mut() {
+                        let before = row.len();
+                        row.retain(|u| u.user_id != user_id);
+                        if row.len() < before {
+                            removed = true;
+                        }
+                    }
+                    // Remove empty rows
+                    vehicle.seats.retain(|r| !r.is_empty());
+
+                    if removed {
+                        if let Err(e) = self.save_booking(vehicle) {
+                            eprintln!("Failed to save updated booking: {}", e);
+                        } else {
+                            println!("Cancelled booking for user {}", user_id);
+                        }
+                    } else {
+                        println!("No booking found for user {} on vehicle {}", user_id, entity_id);
+                    }
+                } else {
+                    println!("Vehicle with id {} not found", entity_id);
+                }
+            }
+            Err(e) => eprintln!("Failed to read vehicles: {}", e),
+        }
     }
 
-    // Placeholder for printing a booking, matching C++'s empty implementation.
-    fn print_booking(&self, _entity_id: String, _user_id: String) {
-        println!("Print booking not implemented"); // Prints a placeholder message.
+    // Prints booking details for a given vehicle and user.
+    fn print_booking(&self, entity_id: String, user_id: String)
+    where
+        FileIOImpl<Vehicle>: super::file_io::FileIO<Item = Vehicle>,
+    {
+        let file = FileIOImpl::<Vehicle>::new();
+        match file.read_from_file() {
+            Ok(vehicles) => {
+                if let Some(vehicle) = vehicles.iter().find(|v| v.vehicle_id == entity_id) {
+                    println!(
+                        "Vehicle: {} (id: {}), {} -> {}, time: {}",
+                        vehicle.name, vehicle.vehicle_id, vehicle.source, vehicle.destination, vehicle.time
+                    );
+                    let mut found = false;
+                    for (row_i, row) in vehicle.seats.iter().enumerate() {
+                        for (col_i, user) in row.iter().enumerate() {
+                            if user.user_id == user_id {
+                                println!(
+                                    "Found booking - row: {}, col: {}, user: {} (id: {})",
+                                    row_i, col_i, user.name, user.user_id
+                                );
+                                found = true;
+                            }
+                        }
+                    }
+                    if !found {
+                        println!("No booking found for user {} on vehicle {}", user_id, entity_id);
+                    }
+                } else {
+                    println!("Vehicle with id {} not found", entity_id);
+                }
+            }
+            Err(e) => eprintln!("Failed to read vehicles: {}", e),
+        }
     }
 }
 
@@ -84,13 +148,74 @@ impl BookingService for BookingServiceImpl<Train> {
         self.save_booking(&train) // Saves the Train to db.json.
     }
 
-    // Placeholder for canceling a booking.
-    fn cancel_booking(&self, _entity_id: String, _user_id: String) {
-        println!("Cancel booking not implemented");
+    fn cancel_booking(&self, entity_id: String, user_id: String)
+    where
+        FileIOImpl<Train>: super::file_io::FileIO<Item = Train>,
+    {
+        let file = FileIOImpl::<Train>::new();
+        match file.read_from_file() {
+            Ok(mut trains) => {
+                if let Some(train) = trains.iter_mut().find(|t| t.train_id == entity_id) {
+                    let mut removed = false;
+                    for row in train.seats.iter_mut() {
+                        let before = row.len();
+                        row.retain(|u| u.user_id != user_id);
+                        if row.len() < before {
+                            removed = true;
+                        }
+                    }
+                    // Remove empty rows
+                    train.seats.retain(|r| !r.is_empty());
+
+                    if removed {
+                        if let Err(e) = self.save_booking(train) {
+                            eprintln!("Failed to save updated booking: {}", e);
+                        } else {
+                            println!("Cancelled booking for user {}", user_id);
+                        }
+                    } else {
+                        println!("No booking found for user {} on train {}", user_id, entity_id);
+                    }
+                } else {
+                    println!("Train with id {} not found", entity_id);
+                }
+            }
+            Err(e) => eprintln!("Failed to read trains: {}", e),
+        }
     }
 
-    // Placeholder for printing a booking.
-    fn print_booking(&self, _entity_id: String, _user_id: String) {
-        println!("Print booking not implemented");
+    fn print_booking(&self, entity_id: String, user_id: String)
+    where
+        FileIOImpl<Train>: super::file_io::FileIO<Item = Train>,
+    {
+        let file = FileIOImpl::<Train>::new();
+        match file.read_from_file() {
+            Ok(trains) => {
+                if let Some(train) = trains.iter().find(|t| t.train_id == entity_id) {
+                    println!(
+                        "Train: {} (id: {}), {} -> {}, time: {}",
+                        train.name, train.train_id, train.source, train.destination, train.time
+                    );
+                    let mut found = false;
+                    for (row_i, row) in train.seats.iter().enumerate() {
+                        for (col_i, user) in row.iter().enumerate() {
+                            if user.user_id == user_id {
+                                println!(
+                                    "Found booking - row: {}, col: {}, user: {} (id: {})",
+                                    row_i, col_i, user.name, user.user_id
+                                );
+                                found = true;
+                            }
+                        }
+                    }
+                    if !found {
+                        println!("No booking found for user {} on train {}", user_id, entity_id);
+                    }
+                } else {
+                    println!("Train with id {} not found", entity_id);
+                }
+            }
+            Err(e) => eprintln!("Failed to read trains: {}", e),
+        }
     }
 }

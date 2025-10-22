@@ -4,7 +4,7 @@
 #include <string>    // Includes the string library to use the std::string class for handling text.
 #include <vector>    // Includes the vector library to use the std::vector class for dynamic arrays.
 
-using namespace std;  // Brings the standard namespace into scope, allowing use of std:: types (e.g., string, vector) without explicit qualification. Note: This is generally avoided in header files to prevent namespace pollution.
+using namespace std;  // Brings the standard namespace into scope, allowing use of std:: types (e.g., string, vector) without explicit qualification.
 
 struct Vehicle;  // Forward declaration of the Vehicle struct, allowing the User struct to reference Vehicle pointers without needing the full definition.
 

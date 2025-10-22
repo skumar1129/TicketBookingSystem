@@ -7,7 +7,7 @@
 #include "../entities/vehicle.hpp"  // Includes the vehicle.hpp header file, which defines the Vehicle struct.
 #include "../entities/train.hpp"    // Includes the train.hpp header file, which defines the Train struct.
 
-using namespace std;  // Brings the standard namespace into scope, allowing use of std:: types (e.g., string, vector) without explicit qualification. Note: This is generally avoided in header files to prevent namespace pollution.
+using namespace std;  // Brings the standard namespace into scope, allowing use of std:: types (e.g., string, vector) without explicit qualification.
 using json = nlohmann::json;  // Creates an alias for the nlohmann::json type, simplifying JSON-related operations.
 
 template <typename T>  // Defines a generic template class FileIO for handling file operations with type T.
